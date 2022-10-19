@@ -10,13 +10,21 @@ import (
 )
 
 type WeatherInfo struct {
+	WeatherInfo Main `json:"main"`
+}
+
+type Main struct {
 	Temperature string `json:"temp"`
 }
 
-func GetWeather(lat, lon, part, appid string) (WeatherInfo, error) {
-	logrus.Info(lat, lon, part, appid)
+
+
+
+
+func GetWeather(lat, lon, appid string) (WeatherInfo, error) {
+	logrus.Info(lat, lon, appid)
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.openweathermap.org/data/3.0/onecall?lat=%s&lon=%s&exclude=%s&appid=%s", lat, lon, part, appid), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s", lat, lon, appid), nil)
 	logrus.Info(req.URL)
 
 	if err != nil {

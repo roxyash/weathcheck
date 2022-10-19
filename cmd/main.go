@@ -15,7 +15,7 @@ func main() {
 		logrus.Fatalf("error initializing configs: %s", err.Error())
 	}
 
-	appid := viper.GetString("appid")
+	appid := viper.GetString("wapi.appid")
 
 	token := viper.GetString("dadata.token")
 	secret := viper.GetString("dadata.secret")
@@ -25,13 +25,13 @@ func main() {
 		logrus.Error(http.StatusInternalServerError, err.Error())
 	}
 
-	tempInfo, err := api.GetWeather(data[0].Latitude, data[0].Longitude, "current", appid)
+	tempInfo, err := api.GetWeather(data[0].Latitude, data[0].Longitude, appid)
 
 	if err != nil {
 		logrus.Error(http.StatusInternalServerError, err.Error())
 	}
 
-	logrus.Infof("Temperature now: %v", tempInfo.Temperature)
+	logrus.Infof("Temperature now: %v", tempInfo)
 }
 
 func initConfig() error {
