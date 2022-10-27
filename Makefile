@@ -3,8 +3,6 @@ build:
 run: build
 	 ./.bin/main
 
-# swag:
-# 	swag init -g cmd/main.go
 swag:
 	swag init -g cmd/main.go
 
