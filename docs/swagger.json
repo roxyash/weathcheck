@@ -1,0 +1,94 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API server for weatherchecker Application",
+        "title": "Weatherchecker",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "paths": {
+        "/getweatherinfo": {
+            "get": {
+                "description": "weathercheck",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "weathercheck"
+                ],
+                "summary": "weathercheck",
+                "operationId": "weathercheck",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "address",
+                        "name": "address",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.ResponseWeatherInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/types.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.ErrorResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/types.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "types.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "errorMessage": {
+                    "type": "string"
+                }
+            }
+        },
+        "types.ResponseWeatherInfo": {
+            "type": "object",
+            "properties": {
+                "temp": {
+                    "type": "string"
+                },
+                "town": {
+                    "type": "string"
+                },
+                "weather": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

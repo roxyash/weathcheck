@@ -5,24 +5,34 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 )
 
 type WeatherInfo struct {
-	WeatherInfo Main `json:"main"`
+	TempInfo Main      `json:"main"`
+	Weather  []Weather `json:"weather"`
+	Wind     Wind      `json:"wind"`
+}
+
+type Wind struct {
+	Deg   float64 `json:"deg"`
+	Gust  float64 `json:"gust"`
+	Speed float64 `json:"speed"`
+}
+
+type Weather struct {
+	Description string  `json:"description"`
+	Icon        string  `json:"icon"`
+	Id          float64 `json:"id"`
+	Main        string  `json:"main"`
 }
 
 type Main struct {
-	Temperature string `json:"temp"`
-
+	Temp float64 `json:"temp"`
 }
 
 func GetWeather(lat, lon, appid string) (WeatherInfo, error) {
-	logrus.Info(lat, lon, appid)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric", lat, lon, appid), nil)
-	logrus.Info(req.URL)
 
 	if err != nil {
 		return WeatherInfo{}, nil
@@ -36,20 +46,13 @@ func GetWeather(lat, lon, appid string) (WeatherInfo, error) {
 	if err != nil {
 		return WeatherInfo{}, nil
 	}
-	logrus.Info(string(bodyText))
-	logrus.Info(resp.StatusCode)
 
-	type test struct {
-		Main map[string]string `json:"main"`
-	}
-	var weatherInfo map[string]interface{}
+	weatherInfo := WeatherInfo{}
 
 	err = json.Unmarshal(bodyText, &weatherInfo)
 	if err != nil {
 		return WeatherInfo{}, err
 	}
-	
-	logrus.Infof("TEST:%v", weatherInfo)
-	
-	return WeatherInfo{}, nil
+
+	return weatherInfo, nil
 }

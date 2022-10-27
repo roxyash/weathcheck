@@ -6,14 +6,17 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/sirupsen/logrus"
 )
 
-type Coords struct {
+type GeocoderInfo struct {
 	Latitude  string `json:"geo_lat"`
 	Longitude string `json:"geo_lon"`
+	Region    string `json:"region"`
 }
 
-func Geocoder(address, token, secret string) ([]Coords, error) {
+func Geocoder(address, token, secret string) ([]GeocoderInfo, error) {
 	client := &http.Client{}
 	var data = strings.NewReader(fmt.Sprintf(`[ "%v" ]`, address))
 	req, err := http.NewRequest("POST", "https://cleaner.dadata.ru/api/v1/clean/address", data)
@@ -33,11 +36,11 @@ func Geocoder(address, token, secret string) ([]Coords, error) {
 		return nil, err
 	}
 
-	coords := []Coords{}
-	err = json.Unmarshal(bodyText, &coords)
+	geocoderInfo := []GeocoderInfo{}
+	err = json.Unmarshal(bodyText, &geocoderInfo)
 	if err != nil {
 		return nil, err
 	}
 
-	return coords, nil
+	return geocoderInfo, nil
 }
