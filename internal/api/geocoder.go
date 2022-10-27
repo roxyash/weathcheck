@@ -6,8 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-
-	"github.com/sirupsen/logrus"
 )
 
 type GeocoderInfo struct {
