@@ -1,9 +1,0 @@
-port: "8000"
-
-wapi:
-    appid: "5ed25446337b95d88869faf670323b2a"
-
-dadata:
-    token: "c4a155b617fa1529a09fc6b6695dcd7e5eeff923"
-    secret: "c9e1cc77801304ae9bccbceeffd81133f81adc07"
-    
