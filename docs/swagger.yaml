@@ -7,9 +7,9 @@ definitions:
     type: object
   types.ResponseWeatherInfo:
     properties:
-      temp:
+      region:
         type: string
-      town:
+      temp:
         type: string
       weather:
         type: string

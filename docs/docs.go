@@ -86,10 +86,10 @@ const docTemplate = `{
         "types.ResponseWeatherInfo": {
             "type": "object",
             "properties": {
-                "temp": {
+                "region": {
                     "type": "string"
                 },
-                "town": {
+                "temp": {
                     "type": "string"
                 },
                 "weather": {

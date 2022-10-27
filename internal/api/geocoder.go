@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"weathcheck/internal/helpers"
 )
 
 type GeocoderInfo struct {
@@ -33,12 +34,17 @@ func Geocoder(address, token, secret string) ([]GeocoderInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	err = helpers.CheckStatus(resp.StatusCode, bodyText)
+	if err != nil {
+		return nil, err
+	}
 	geocoderInfo := []GeocoderInfo{}
 	err = json.Unmarshal(bodyText, &geocoderInfo)
 	if err != nil {
 		return nil, err
 	}
+
+	
 
 	return geocoderInfo, nil
 }

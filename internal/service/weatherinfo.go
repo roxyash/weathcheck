@@ -24,18 +24,22 @@ func (s *WeatherInfo) GetWeatherInfo(address string) (types.ResponseWeatherInfo,
 
 	data, err := api.Geocoder(address, s.Token, s.Secret)
 	if err != nil {
-		logrus.Error(http.StatusInternalServerError, err.Error())
+		logrus.Info(http.StatusInternalServerError, err.Error())
+		return types.ResponseWeatherInfo{
+			Error: err.Error(),
+		}, nil
 	}
 
 	weatherInfo, err := api.GetWeather(data[0].Latitude, data[0].Longitude, s.Appid)
 
 	if err != nil {
-		logrus.Error(http.StatusInternalServerError, err.Error())
+		logrus.Info(http.StatusInternalServerError, err.Error())
 	}
 
 	return types.ResponseWeatherInfo{
 		Temperature: fmt.Sprintf("%v", math.Ceil(weatherInfo.TempInfo.Temp)),
 		Weather:     weatherInfo.Weather[0].Main,
 		Region:      data[0].Region,
+		Error:       err.Error(),
 	}, nil
 }

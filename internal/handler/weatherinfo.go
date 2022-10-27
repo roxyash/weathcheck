@@ -21,6 +21,8 @@ import (
 // @Failure default {object} types.ErrorResponse
 // @Router /getweatherinfo [get]
 func (h *Handler) getWeather(c *gin.Context) {
+
+
 	address, ok := c.GetQuery("address")
 	if !ok {
 		helpers.NewErrorResponse(c, http.StatusBadRequest, "invalid address param")
@@ -32,6 +34,6 @@ func (h *Handler) getWeather(c *gin.Context) {
 		helpers.NewErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
+	
 	c.JSON(http.StatusOK, weatherInfo)
 }
