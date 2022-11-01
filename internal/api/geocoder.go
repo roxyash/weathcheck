@@ -62,9 +62,52 @@ func GeocoderDadata(address, token, secret string) ([]GeocoderInfo, error) {
 	return geocoderInfo, nil
 }
 
+func getRegion(jsonParsed *gabs.Container) (string, error) {
+
+	gObjRegion, err := jsonParsed.JSONPointer("/hits/0/city")
+	if err != nil {
+		gObjState, err := jsonParsed.JSONPointer("/hits/0/state")
+		if err != nil {
+			gObjName, err := jsonParsed.JSONPointer("/hits/0/name")
+			if err != nil {
+				return "", errors.New("Can`t unmarshal json")
+			} else {
+				region, ok := gObjName.Data().(string)
+				if !ok {
+					return "", errors.New("Can`t unmarshal json")
+				} else {
+					return region, nil
+				}
+			}
+		} else {
+			region, ok := gObjState.Data().(string)
+			if !ok {
+				return "", errors.New("Can`t unmarshal json")
+			} else {
+				return region, nil
+			}
+		}
+	} else {
+		region, ok := gObjRegion.Data().(string)
+		if !ok {
+			return "", errors.New("Can`t unmarshal json")
+		} else {
+			return region, nil
+		}
+	}
+}
+
 func GeocoderGraphhopper(address, apikey string) (GeocoderInfo, error) {
+	var newAddress string
+	checkAddr := strings.Split(address, " ")
+	if len(checkAddr) == 0 {
+		newAddress = checkAddr[0]
+	} else {
+		newAddress = strings.Join(checkAddr[:], "%20")
+	}
+
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "https://graphhopper.com/api/1/geocode?q=Пресненская%20набережная&locale=en&key=c077a3ab-c8c9-45c6-9ed6-681d4df0a616", nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://graphhopper.com/api/1/geocode?q=%v&locale=en&key=%v", newAddress, apikey), nil)
 	if err != nil {
 		return GeocoderInfo{}, err
 	}
@@ -77,6 +120,8 @@ func GeocoderGraphhopper(address, apikey string) (GeocoderInfo, error) {
 	if err != nil {
 		return GeocoderInfo{}, err
 	}
+
+	fmt.Printf("bodyText: %v", string(bodyText[:]))
 
 	jsonParsed, err := gabs.ParseJSON(bodyText)
 
@@ -94,11 +139,6 @@ func GeocoderGraphhopper(address, apikey string) (GeocoderInfo, error) {
 		return GeocoderInfo{}, err
 	}
 
-	gObjRegion, err := jsonParsed.JSONPointer("/hits/0/city")
-	if err != nil {
-		return GeocoderInfo{}, err
-	}
-
 	lat, ok := gObjLat.Data().(float64)
 	if !ok {
 		return GeocoderInfo{}, errors.New("Error unmarshal lat")
@@ -107,10 +147,10 @@ func GeocoderGraphhopper(address, apikey string) (GeocoderInfo, error) {
 	if !ok {
 		return GeocoderInfo{}, errors.New("Error unmarshal lon")
 	}
-	region, ok := gObjRegion.Data().(string)
 
-	if !ok {
-		return GeocoderInfo{}, errors.New("Error unmarshal region")
+	region, err := getRegion(jsonParsed)
+	if err != nil {
+		return GeocoderInfo{}, errors.New("Error unmarshal region with getRegion")
 	}
 
 	geocoderInfo := GeocoderInfo{
