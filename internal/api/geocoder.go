@@ -105,12 +105,12 @@ func GeocoderGraphhopper(address, apikey string) (GeocoderInfo, error) {
 	}
 	lon, ok := gObjLon.Data().(float64)
 	if !ok {
-		return GeocoderInfo{}, errors.New("Error unmarshal lat")
+		return GeocoderInfo{}, errors.New("Error unmarshal lon")
 	}
 	region, ok := gObjRegion.Data().(string)
 
 	if !ok {
-		return GeocoderInfo{}, errors.New("Error unmarshal lat")
+		return GeocoderInfo{}, errors.New("Error unmarshal region")
 	}
 
 	geocoderInfo := GeocoderInfo{
