@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"math"
-	"net/http"
 	"weathcheck/internal/api"
 	"weathcheck/internal/types"
 
@@ -23,26 +22,21 @@ func NewWeatherInfoService(appid, token, secret, apikey string) *WeatherInfo {
 
 func (s *WeatherInfo) GetWeatherInfo(address string) (types.ResponseWeatherInfo, error) {
 
-	data, err := api.GeocoderGraphhopper(address, s.Appid)
-	logrus.Infof("%v", err)
+	data, err := api.GeocoderGraphhopper(address, s.Apikey)
 	if err != nil {
-		logrus.Info(http.StatusInternalServerError, err.Error())
-		return types.ResponseWeatherInfo{
-			Error: err.Error(),
-		}, nil
+		return types.ResponseWeatherInfo{}, err
 	}
 
-
-	weatherInfo, err := api.GetWeather(data[0].Latitude, data[0].Longitude, s.Appid)
-
+	weatherInfo, err := api.GetWeather(data.Latitude, data.Longitude, s.Appid)
+	logrus.Infof("%v %v", weatherInfo, err)
 	if err != nil {
-		logrus.Info(http.StatusInternalServerError, err.Error())
+		return types.ResponseWeatherInfo{}, err
 	}
 
-	return types.ResponseWeatherInfo{
-		Temperature: fmt.Sprintf("%v", math.Ceil(weatherInfo.TempInfo.Temp)),
-		Weather:     weatherInfo.Weather[0].Main,
-		Region:      data[0].Region,
-		Error:       err.Error(),
-	}, nil
+	responseWeatherInfo := types.ResponseWeatherInfo{Temperature: fmt.Sprintf("%v", math.Ceil(weatherInfo.TempInfo.Temp)),
+		Weather: weatherInfo.Weather[0].Main,
+		Region:  data.Region,
+	}
+
+	return responseWeatherInfo, nil
 }
