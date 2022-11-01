@@ -30,8 +30,10 @@ func main() {
 	token := viper.GetString("dadata.token")
 	secret := viper.GetString("dadata.secret")
 
+	apikey := viper.GetString("graphhopper.apikey")
 
-	services := service.NewService(appid, token, secret)
+
+	services := service.NewService(appid, token, secret, apikey)
 	handlers := handler.NewHandler(services)
 	srv := new(server.Server)
 

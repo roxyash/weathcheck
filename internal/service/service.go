@@ -10,8 +10,8 @@ type Service struct {
 	WeatherInfoService
 }
 
-func NewService(appid, token, secret string) *Service {
+func NewService(appid, token, secret, apikey string) *Service {
 	return &Service{
-		WeatherInfoService:  NewWeatherInfoService(appid, token, secret),
+		WeatherInfoService:  NewWeatherInfoService(appid, token, secret, apikey),
 	}
 }
